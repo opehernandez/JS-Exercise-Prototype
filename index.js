@@ -7,6 +7,8 @@
         + If a plane lands, its `isFlying` property is set to false.
 */
 
+const { jsxSpreadChild } = require("@babel/types");
+
 // EXAMPLE SOLUTION CODE:
 function Airplane(name) {
   this.name = name;
@@ -39,11 +41,27 @@ Airplane.prototype.land = function () {
         + It should return a string with `name` and `age`. Example: "Mary, 50"
 */
 
-function Person() {
-  
+function Person(name, age) {
+  this.name = name || "Neo",
+  this.age = age || 20,
+  this.stomach = []
 }
 
+Person.prototype.eat =  function(foodItem) {
+  this.stomach.length < 10 ? this.stomach.push(foodItem) : console.log("stomach is full");
+}
 
+Person.prototype.poop = function() {
+  this.stomach.splice(0, this.stomach.length);
+}    
+Person.prototype.toString = function() {
+  return `${this.name}, ${this.age}`;
+}   
+
+const neo = new Person("Neo", 20);
+
+  console.log(neo.toString())
+  
 
 
 
@@ -63,11 +81,30 @@ function Person() {
         + The `drive` method should return a string "I ran out of fuel at x miles!" x being `odometer`.
 */
 
-function Car() {
-  
+function Car(model, milesPerGallon, tankCap) {
+  this.model = model,
+  this.milesPerGallon = milesPerGallon || 20,
+  this.tankCap = tankCap;
+  this.tank = 0,
+  this.odometer = 0;
 }
 
-
+Car.prototype.fill = function(gallons) {
+  if(this.tank >= this.tankCap) {   //check if tank is full
+    console.log(`Your Tank is full!!!`);
+  }
+  else if(gallons > this.tankCap - this.tank) {
+    console.log(`You only pumped ${this.tankCap - this.tank} gallons, ${gallons - (this.tankCap - this.tank)} gallons were left out`)
+    this.tank = this.tankCap;
+  }
+  else {
+    this.tank += gallons;
+    console.log(`your tank has ${this.tank} gallons`)
+  }
+}
+const dodge = new Car("dodge", 14, 30);
+console.log(dodge)
+console.log(dodge.fill())
 /*
   TASK 3
     - Write a Baby constructor subclassing Person.
@@ -75,11 +112,19 @@ function Car() {
     - Besides the methods on Person.prototype, babies have the ability to `.play()`:
         + Should return a string "Playing with x", x being the favorite toy.
 */
-function Baby() {
- 
+function Baby(name, age, favoriteToy) {
+  Person.call(this, name, age)
+  this.favoriteToy = favoriteToy
+}
+Baby.prototype = Object.create(Person.prototype)
+Baby.prototype.play = function() {
+  return `Playing with ${this.favoriteToy}`
 }
 
 
+const pebbles = new Baby("Pebbles", 5, "car")
+console.log(pebbles.play())
+console.log(pebbles)
 /* 
   TASK 4
   In your own words explain the four principles for the "this" keyword below:
